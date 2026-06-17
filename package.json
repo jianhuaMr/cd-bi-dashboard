@@ -1,0 +1,16 @@
+{
+  "name": "cd-bi-dashboard",
+  "version": "2.6.0",
+  "private": true,
+  "description": "CD-BI monthly settlement dashboard",
+  "scripts": {
+    "start": "node server.js",
+    "check": "node --check server.js && node --check js/db.js && node --check js/app.js && node --check js/exchange.js && node --check js/parser.js",
+    "build:single": "node scripts/build-singlefile.js",
+    "build:github-pages": "node scripts/build-github-pages.js",
+    "verify:static": "node scripts/verify-static-build.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

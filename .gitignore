@@ -1,0 +1,16 @@
+.netlify/
+node_modules/
+*.log
+*.zip
+
+dist-cloudflare-pages/
+dist-cloudflare-singlefile/
+dist-cloudflare-singlefile-clean/
+dist-cloudflare-supabase/
+
+.wrangler/
+.env
+.env.*
+
+!docs/
+!docs/**
