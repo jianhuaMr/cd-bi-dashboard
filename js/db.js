@@ -131,6 +131,15 @@
     return CLOUD.enabled && CLOUD.url && CLOUD.key && !cloudBroken && typeof fetch === 'function' && !!(session && session.access_token);
   }
 
+  function isCloudConfigured() {
+    return !!(CLOUD.enabled && CLOUD.url && CLOUD.key && typeof fetch === 'function');
+  }
+
+  function hasCloudSession() {
+    const session = getSession();
+    return !!(session && session.access_token);
+  }
+
   async function cloudRequest(path, options = {}) {
     if (!cloudReady()) throw new Error('cloud storage disabled');
     const session = await ensureSession();
@@ -360,6 +369,8 @@
     delRate,
     getAllRates,
     isCloudEnabled,
+    isCloudConfigured,
+    hasCloudSession,
     onCloudChange,
     signIn,
     signOut,

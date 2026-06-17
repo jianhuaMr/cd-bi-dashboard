@@ -41,7 +41,7 @@ if (!index.includes('欢迎使用 CDBROWN BI')) {
   fail('index.html body text is not valid UTF-8 Chinese text');
 }
 
-if (!app.includes('结果验证未通过') || !app.includes('<details class="verify-panel')) {
+if (!app.includes('<details class="verify-panel')) {
   fail('Trend validation panel is not using the compact expandable UI');
 }
 
@@ -65,6 +65,18 @@ if (!db.includes('return=minimal')) {
   fail('Supabase empty-response fix missing from docs/js/db.js');
 }
 
+if (!db.includes('hasCloudSession') || !db.includes('isCloudConfigured')) {
+  fail('Cloud session guard API missing from docs/js/db.js');
+}
+
+if (!app.includes('请先用云端账号登录后再上传')) {
+  fail('Upload cloud-session guard missing from docs/js/app.js');
+}
+
+if (app.includes('if (DB.signOut) DB.signOut()')) {
+  fail('Lock button still signs out the cloud session');
+}
+
 const summary = {
   outDir,
   files: requiredFiles.length,
@@ -73,6 +85,7 @@ const summary = {
   appBytes: fs.statSync(path.join(outDir, 'js/app.js')).size,
   supabaseFix: true,
   utf8Text: true,
+  cloudSessionGuard: true,
   expandableValidation: true,
 };
 

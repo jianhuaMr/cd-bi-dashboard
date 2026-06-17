@@ -1,4 +1,4 @@
-/* ===== CD-BI 主应用 ===== */
+﻿/* ===== CD-BI 主应用 ===== */
 (function () {
   'use strict';
   const P = window.CDBI_PARSER, DB = window.CDBI_DB, META = P.STORE_META, FX = window.CDBI_FX;
@@ -53,6 +53,29 @@
     const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
     return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2, '0')).join('');
   }
+
+  function cloudIsConfigured() {
+    return !!(DB && DB.isCloudConfigured && DB.isCloudConfigured());
+  }
+
+  function cloudSessionMissing() {
+    return cloudIsConfigured() && DB.hasCloudSession && !DB.hasCloudSession();
+  }
+
+  function showGate(message) {
+    $('#app').classList.add('hidden');
+    $('#gate').classList.remove('hidden');
+    if (message) {
+      const err = $('#gateErr');
+      err.textContent = message;
+      err.classList.remove('hidden');
+    }
+    const email = $('#gateEmail');
+    if (email) email.focus();
+    else $('#gatePass').focus();
+  }
+
+  let stopCloudWatch = null;
 
   // ---------- 统一金额接口 (需求: formatMoney(amount, src, tgt, month)) ----------
   // 全站金额展示一律走 money(); 图表数值走 moneyVal(); 聚合走 sumMoney()。
@@ -2672,6 +2695,14 @@
 
   async function handleFiles(files) {
     const log = $('#upLog');
+    if (cloudSessionMissing()) {
+      const item = document.createElement('div');
+      item.className = 'log-item err';
+      item.textContent = '请先用云端账号登录后再上传。当前未连接云端，已禁止保存到本机，避免部署后数据丢失。';
+      if (log) log.prepend(item);
+      toast('请先登录云端账号，再上传文件');
+      return;
+    }
     const tasks = [];
     for (const f of Array.from(files)) {
       const item = document.createElement('div');
@@ -2769,9 +2800,23 @@
     S.fxConflicts = FX.findConflicts(S.summary, META);
   }
 
+  function startCloudWatcher() {
+    if (stopCloudWatch || !DB.onCloudChange || !DB.isCloudEnabled || !DB.isCloudEnabled()) return;
+    stopCloudWatch = DB.onCloudChange(async () => {
+      await loadState();
+      render();
+      toast('云端数据已同步');
+    });
+  }
+
   async function checkPass(input) {
     const emailEl = $('#gateEmail');
     const email = emailEl ? String(emailEl.value || '').trim() : '';
+    if (cloudIsConfigured() && DB.signIn) {
+      if (!email) throw new Error('请填写云端账号邮箱，用云端账号登录。否则数据只会保存在本机。');
+      await DB.signIn(email, input);
+      return true;
+    }
     if (email && DB.signIn) {
       await DB.signIn(email, input);
       return true;
@@ -2782,14 +2827,14 @@
     return h === await sha256(DEFAULT_PASS) || h === await sha256(LEGACY_PASS);
   }
 
-  function showApp() {
+  async function showApp() {
+    await loadState();
     $('#gate').classList.add('hidden');
     $('#app').classList.remove('hidden');
     render();
   }
 
   async function init() {
-    await loadState();
     if (!$('#gateEmail')) {
       const passLabel = document.querySelector('label[for="gatePass"]');
       if (passLabel) {
@@ -2800,20 +2845,21 @@
         emailInput.type = 'email';
         emailInput.id = 'gateEmail';
         emailInput.autocomplete = 'username';
-        emailInput.placeholder = '请输入 Supabase 用户邮箱';
+        emailInput.placeholder = '请输入 Supabase/Auth 邮箱';
         passLabel.before(emailLabel, emailInput);
         passLabel.textContent = '云端账号密码 / 本机访问密码';
       }
     }
     $('#nav').onclick = e => { const b = e.target.closest('.nav-item'); if (b) setView(b.dataset.view); };
     $('#gotoData').onclick = () => setView('data');
-    $('#lockBtn').onclick = () => { sessionStorage.removeItem('cdbi_auth'); if (DB.signOut) DB.signOut(); location.reload(); };
+    $('#lockBtn').onclick = () => { sessionStorage.removeItem('cdbi_auth'); location.reload(); };
     $('#gateForm').onsubmit = async e => {
       e.preventDefault();
       try {
         if (await checkPass($('#gatePass').value)) {
         sessionStorage.setItem('cdbi_auth', '1');
-        showApp();
+        await showApp();
+        startCloudWatcher();
       } else {
         $('#gateErr').classList.remove('hidden');
         $('#gatePass').value = ''; $('#gatePass').focus();
@@ -2823,16 +2869,19 @@
         $('#gateErr').classList.remove('hidden');
       }
     };
-    if (DB.onCloudChange) {
-      DB.onCloudChange(async () => {
-        await loadState();
-        render();
-        toast('云端数据已同步');
-      });
+    if (sessionStorage.getItem('cdbi_auth') === '1') {
+      if (cloudSessionMissing()) {
+        sessionStorage.removeItem('cdbi_auth');
+        showGate('请使用云端账号邮箱和密码登录。当前没有云端会话，无法读取团队共享数据。');
+      } else {
+        await showApp();
+        startCloudWatcher();
+      }
+    } else {
+      showGate('');
     }
-    if (sessionStorage.getItem('cdbi_auth') === '1') showApp();
-    else { $('#gate').classList.remove('hidden'); $('#gatePass').focus(); }
   }
 
   init();
 })();
+
