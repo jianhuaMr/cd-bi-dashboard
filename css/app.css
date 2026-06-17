@@ -76,10 +76,11 @@ input, select { font-family: inherit; font-size: 14px; }
 }
 .brand { display: flex; align-items: center; gap: 10px; padding: 18px 16px 14px; border-bottom: 1px solid var(--border); }
 .brand-mark {
-  width: 36px; height: 36px; border-radius: 9px; background: var(--primary);
+  width: 38px; height: 38px; border-radius: 10px; background: var(--primary);
   color: #fff; font-weight: 800; display: flex; align-items: center; justify-content: center;
+  line-height: 1.05; font-size: 13px; letter-spacing: .2px;
 }
-.brand-text b { display: block; font-size: 15px; line-height: 1.2; }
+.brand-text b { display: block; font-size: 13px; line-height: 1.25; }
 .brand-text span { font-size: 11px; color: var(--faint); }
 .nav { padding: 10px 8px; flex: 1; overflow-y: auto; }
 .nav-item {
@@ -640,4 +641,48 @@ input[type="password"].inline, input[type="text"].inline { padding: 7px 10px; bo
   .trend-card-grid { grid-template-columns: 1fr; }
   .trend-store-body { grid-template-columns: 1fr; }
   .trend-store-stats { border-right: 0; border-bottom: 1px solid var(--border); padding: 0 0 8px; }
+}
+
+/* QA panel override: keep validation compact until expanded. */
+.trend-qa-collapsed {
+  margin: 0 0 12px;
+  padding: 8px 12px;
+}
+.trend-qa-collapsed summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  list-style: none;
+  min-height: 28px;
+}
+.trend-qa-collapsed summary::-webkit-details-marker { display: none; }
+.trend-qa-collapsed summary::after {
+  content: "展开详情";
+  margin-left: auto;
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 700;
+}
+.trend-qa-collapsed[open] summary::after { content: "收起详情"; }
+.trend-qa-collapsed summary small {
+  color: var(--faint);
+  font-size: 12px;
+}
+.trend-qa-collapsed .verify-help {
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: rgba(255,255,255,.65);
+  color: var(--muted);
+  line-height: 1.6;
+}
+.trend-qa-collapsed ul {
+  width: 100%;
+  margin: 8px 0 0 18px;
+  max-height: 150px;
+  overflow: auto;
+  color: var(--muted);
+  line-height: 1.6;
 }

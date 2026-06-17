@@ -1430,6 +1430,30 @@
       ${rows ? `<ul>${rows}</ul>` : ''}
     </div>`;
   }
+  function trendValidationPanel(qa) {
+    const critical = qa.issues.filter(x => x.level === 'critical').length;
+    const major = qa.issues.filter(x => x.level === 'major').length;
+    const minor = qa.issues.filter(x => x.level === 'minor').length;
+    const cls = critical ? 'bad' : major ? 'warn' : 'ok';
+    const title = critical ? '结果验证未通过' : major ? '结果验证有风险' : '结果验证通过';
+    const badgeCls = critical ? 'verify-bad' : major ? 'verify-warn' : 'verify-ok';
+    const rows = qa.issues.slice(0, 12).map(x => `<li><b>${esc(x.month || '')}</b> ${esc(x.label)}：${esc(x.message)}</li>`).join('');
+    const action = critical
+      ? '处理：先暂停对外汇报，优先核对该月份清算表、内部标准表和TTL汇总口径。'
+      : major
+        ? '处理：需要人工确认标准表是否已上传、跨期退款/费用是否属于业务事实。'
+        : '处理：仅保留监控，Minor 多为环比波动提醒，不一定代表数据错误。';
+    return `<details class="verify-panel ${cls} trend-qa trend-qa-collapsed">
+      <summary>
+        <span class="badge ${badgeCls}">${title}</span>
+        <span>Critical ${critical} / Major ${major} / Minor ${minor}</span>
+        <small>已检查 TTL 平衡、异常数值、内部标准核对和环比波动</small>
+      </summary>
+      <div class="verify-help">${action}</div>
+      ${rows ? `<ul>${rows}</ul>` : '<div class="verify-help">当前未发现需要处理的异常。</div>'}
+    </details>`;
+  }
+
   function trendChannelCard(ch, model, rank) {
     const months = model.months;
     const latest = months[months.length - 1];

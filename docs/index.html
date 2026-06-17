@@ -6,8 +6,9 @@
 <meta name="robots" content="noindex, nofollow">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.sheetjs.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' https://loooajojyuxsgbjjzzvs.supabase.co; frame-ancestors 'none'; base-uri 'self'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
-<title>CD-BI 月度清算分析</title>
-<link rel="stylesheet" href="css/app.css?v=20260616-cloudflare">
+<title>CDBROWN통합 커머스 BI 시스템</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231E40AF'/%3E%3Ctext x='32' y='28' font-family='Arial,sans-serif' font-size='18' font-weight='800' text-anchor='middle' fill='white'%3ECD%3C/text%3E%3Ctext x='32' y='46' font-family='Arial,sans-serif' font-size='16' font-weight='800' text-anchor='middle' fill='white'%3EBI%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/app.css?v=20260617-brand-qa">
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js" integrity="sha384-EnyY0/GSHQGSxSgMwaIPzSESbqoOLSexfnSMN2AP+39Ckmn92stwABZynq1JyzdT" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js" integrity="sha384-Mx5lkUEQPM1pOJCwFtUICyX45KNojXbkWdYhkKUKsbv391mavbfoAmONbzkgYPzR" crossorigin="anonymous"></script>
 </head>
@@ -15,8 +16,8 @@
 
 <div id="gate" class="gate hidden">
   <div class="gate-card">
-    <div class="gate-logo">CD-BI</div>
-    <h1>月度清算 BI</h1>
+    <div class="gate-logo">CD<br>BI</div>
+    <h1>CDBROWN통합 커머스 BI 시스템</h1>
     <p class="gate-sub">请输入访问密码后进入系统</p>
     <form id="gateForm">
       <label for="gatePass">访问密码</label>
@@ -30,8 +31,8 @@
 <div id="app" class="app hidden">
   <aside class="sidebar" id="sidebar">
     <div class="brand">
-      <div class="brand-mark">CD</div>
-      <div class="brand-text"><b>CD-BI</b><span>月度清算分析</span></div>
+      <div class="brand-mark">CD<br>BI</div>
+      <div class="brand-text"><b>CDBROWN통합 커머스 BI 시스템</b><span>月度清算分析</span></div>
     </div>
     <nav class="nav" id="nav">
       <button class="nav-item active" data-view="overview">
@@ -40,11 +41,11 @@
       </button>
       <button class="nav-item" data-view="trends">
         <svg viewBox="0 0 24 24"><path d="M3.5 18.5l6-6 4 4L22 7.92 20.59 6.5l-7.09 8-4-4L2 18l1.5.5z"/></svg>
-        <span>历史趋势<i>趋势分析</i></span>
+        <span>历史趋势<i>추세 분석</i></span>
       </button>
       <button class="nav-item" data-view="store">
         <svg viewBox="0 0 24 24"><path d="M20 4H4v2h16V4zm1 10v-2l-1-5H4l-1 5v2h1v6h10v-6h4v6h2v-6h1zm-9 4H6v-4h6v4z"/></svg>
-        <span>店铺明细<i>SKU/ABC/详细</i></span>
+        <span>店铺明细<i>스토어 상세</i></span>
       </button>
       <button class="nav-item" data-view="inventory">
         <svg viewBox="0 0 24 24"><path d="M20 2H4c-1 0-2 .9-2 2v3.01c0 .72.43 1.34 1 1.69V20c0 1.1 1.1 2 2 2h14c.9 0 2-.9 2-2V8.7c.57-.35 1-.97 1-1.69V4c0-1.1-1-2-2-2zm-5 12H9v-2h6v2zm5-7H4V4h16v3z"/></svg>
@@ -52,7 +53,7 @@
       </button>
       <button class="nav-item" data-view="products">
         <svg viewBox="0 0 24 24"><path d="M12 2l9 4.9v10.2L12 22l-9-4.9V6.9L12 2zm0 2.3L5 8.1v7.8l7 3.8 7-3.8V8.1l-7-3.8zM7 9.2l5 2.7 5-2.7"/></svg>
-        <span>产品登记<i>商品管理</i></span>
+        <span>产品登记<i>상품 관리</i></span>
       </button>
       <button class="nav-item" data-view="data">
         <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
@@ -61,7 +62,7 @@
     </nav>
     <div class="sidebar-foot">
       <div id="dataStatus" class="data-status">暂无数据 · 请上传文件</div>
-      <button class="link-btn" id="lockBtn" title="锁定后需要重新输入密码">🔒 锁定退出 · 잠금</button>
+      <button class="link-btn" id="lockBtn" title="退出并锁定本机访问">锁定退出 · 잠금</button>
     </div>
   </aside>
 
@@ -69,7 +70,7 @@
     <div id="topbar" class="topbar"></div>
     <div id="emptyHint" class="empty-hint hidden">
       <div class="empty-card">
-        <h2>欢迎使用 CD-BI · 환영합니다</h2>
+        <h2>欢迎使用 CDBROWN BI · 환영합니다</h2>
         <p>尚未加载任何清算数据。请前往 <b>数据中心</b> 上传店铺清算 Excel 原件，系统将自动识别店铺与月份。</p>
         <button class="btn btn-primary" id="gotoData">前往数据中心 · 데이터 업로드</button>
       </div>
@@ -80,9 +81,9 @@
 
 <div id="toast" class="toast hidden"></div>
 
-<script src="js/db.js?v=20260616-cloudflare"></script>
-<script src="js/exchange.js?v=20260616-cloudflare"></script>
-<script src="js/parser.js?v=20260616-cloudflare"></script>
-<script src="js/app.js?v=20260616-cloudflare"></script>
+<script src="js/db.js?v=20260617-brand-qa"></script>
+<script src="js/exchange.js?v=20260617-brand-qa"></script>
+<script src="js/parser.js?v=20260617-brand-qa"></script>
+<script src="js/app.js?v=20260617-brand-qa"></script>
 </body>
 </html>
